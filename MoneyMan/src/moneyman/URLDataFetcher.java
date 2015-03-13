@@ -9,12 +9,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class DataFetcher {
+public class URLDataFetcher implements CurrencyFetcherInterface{
 
 	private URL currencyURL;
 	private ArrayList<CurrencyValue> currencyValues = new ArrayList<>();
 
-	public DataFetcher() {
+	public URLDataFetcher() {
 		try {
 			currencyURL  = new URL("http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote");
 		} catch (MalformedURLException e) {
@@ -53,10 +53,16 @@ public class DataFetcher {
 	}
 	
 
+	@Override
+	public ArrayList<CurrencyValue> getCurrencyList() {
+		return currencyValues;
+	}
+	
 	public static void main(String[] args) {
-
-		DataFetcher df = new DataFetcher();
-		df.currencyValues.forEach(v -> System.out.println(v));
+		CurrencyFetcherInterface fetcher = new URLDataFetcher();
+		ArrayList<CurrencyValue> values = fetcher.getCurrencyList();
+		values.forEach(s -> System.out.println(s));
+		
 	}
 
 }
