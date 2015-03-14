@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class URLDataFetcher implements CurrencyFetcherInterface{
 
@@ -59,11 +61,27 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 		return currencies;
 	}
 	
+	@Override
+	public List<String> getAvailableCurrencies() {
+		ArrayList<String> cs = new ArrayList<>();
+		cs.addAll(currencies.keySet());
+		return cs;
+	}
+	
+	@Override
+	public int getAvailableCurrencyCount() {
+		return currencies.size();
+	}
+	
 	public static void main(String[] args) {
 		CurrencyFetcherInterface fetcher = new URLDataFetcher();
 		HashMap<String, BigDecimal> currencies = fetcher.getCurrencyMap();
 		currencies.forEach((s, v) -> System.out.println(s+" - "+v.toString()));
 		
 	}
+
+	
+
+	
 
 }
