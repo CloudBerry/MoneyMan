@@ -8,11 +8,12 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class URLDataFetcher implements CurrencyFetcherInterface{
 
 	private URL currencyURL;
-	private ArrayList<CurrencyValue> currencyValues = new ArrayList<>();
+	private HashMap<String, BigDecimal> currencies = new HashMap<>();
 
 	public URLDataFetcher() {
 		try {
@@ -49,19 +50,19 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 		}
 		String processedName = unprocessedName.substring(23, 26);
 		String processedPrice = unprocessedPrice.substring(unprocessedPrice.indexOf("\">")+2, unprocessedPrice.indexOf("</field"));
-		currencyValues.add(new CurrencyValue(processedName, new BigDecimal(processedPrice)));
+		currencies.put(processedName, new BigDecimal(processedPrice));
 	}
 	
 
 	@Override
-	public ArrayList<CurrencyValue> getCurrencyList() {
-		return currencyValues;
+	public HashMap<String, BigDecimal> getCurrencyMap() {
+		return currencies;
 	}
 	
 	public static void main(String[] args) {
 		CurrencyFetcherInterface fetcher = new URLDataFetcher();
-		ArrayList<CurrencyValue> values = fetcher.getCurrencyList();
-		values.forEach(s -> System.out.println(s));
+		HashMap<String, BigDecimal> currencies = fetcher.getCurrencyMap();
+		currencies.forEach((s, v) -> System.out.println(s+" - "+v.toString()));
 		
 	}
 

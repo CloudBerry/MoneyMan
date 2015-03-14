@@ -1,7 +1,8 @@
 package moneyman;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.util.HashMap;
 
 public interface CurrencyFetcherInterface {
-	public ArrayList<CurrencyValue> getCurrencyList();
+	public HashMap<String, BigDecimal> getCurrencyMap();
 }
