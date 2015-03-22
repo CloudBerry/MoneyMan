@@ -3,13 +3,16 @@ package application;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
+import moneyman.CountryListReader;
 import moneyman.CurrencyConverter;
 import moneyman.CurrencyFetcherInterface;
 import moneyman.URLDataFetcher;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,9 +21,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextAlignment;
 
 
 public class Main extends Application {
@@ -28,13 +34,15 @@ public class Main extends Application {
 	private GridPane root;
 	private SuperListPanel fromPanel;
 	private SuperListPanel toPanel;
-	private Label toLabel = new Label("to");
+	private Label toLabel = new Label("→");
 	
 	private TextField fromField = new TextField();
 	private Button convertBTN = new Button("Convert");
 	private TextField toField = new TextField();
 	
 	CurrencyFetcherInterface fetcher;
+	HashMap<String, String[]> countryinfo;
+	
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -43,22 +51,24 @@ public class Main extends Application {
 		if (fetcher.getAvailableCurrencyCount() == 0) {
 			//TODO: TRY OFFLINE
 		}
-		
+		countryinfo = new CountryListReader().getCountries();
 		try {
 			root = new GridPane();
 			root.setHgap(10);
 			root.setVgap(10);
 			
-			fromPanel = new SuperListPanel(fetcher.getAvailableCurrencies().toArray());
-			toPanel = new SuperListPanel(fetcher.getAvailableCurrencies().toArray());
+			fromPanel = new SuperListPanel(fetcher.getAvailableCurrencies().toArray(), countryinfo);
+			toPanel = new SuperListPanel(fetcher.getAvailableCurrencies().toArray(), countryinfo);
 			toLabel.getStyleClass().add("tolabel");
 			
 			fromField.setPromptText("How much?");
-			fromField.setMaxWidth(150);
 			toField.setEditable(false);
-			toField.setMaxWidth(150);
+
 			
 			convertBTN.setOnAction(this::buttonClicked);
+			
+			toLabel.setTextAlignment(TextAlignment.CENTER);
+			root.setHalignment(toLabel, HPos.CENTER);
 			
 			root.add(fromPanel, 0, 0);
 			root.add(toLabel, 1, 0);
@@ -71,16 +81,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 			primaryStage.setTitle("MoneyMan 1.0");
 			primaryStage.setResizable(false);
-			try {
-				primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("icons/moneyman_icon_16.png")));
-				primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("icons/moneyman_icon_32.png")));
-				primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("icons/moneyman_icon_64.png")));
-				primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("icons/moneyman_icon_128.png")));
-				primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("icons/moneyman_icon_256.png")));
-				primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("icons/moneyman_icon_512.png")));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			
 			primaryStage.setIconified(true);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
@@ -102,6 +103,8 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	public static void main(String[] args) {
 		launch(args);

@@ -1,6 +1,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,8 +24,15 @@ public class SuperListPanel extends BorderPane{
 	ListView<Object> listView;
 	
 	
-	public SuperListPanel(Object[] data) {
+	public SuperListPanel(Object[] data, HashMap<String, String[]> countryInfo) {
 		allData = data;
+		
+		//Add country description if found
+		for (int i = 0; i < allData.length; i++){
+			if (countryInfo.containsKey(allData[i])){
+				allData[i] = ((String) allData[i]).concat(", "+countryInfo.get(allData[i])[1]);
+			}
+		}
 		
 		searchField = new TextField();
 		searchField.addEventFilter(KeyEvent.ANY, event);
@@ -39,13 +47,25 @@ public class SuperListPanel extends BorderPane{
 		listView.requestFocus();
 		
 		
-		setMaxWidth(150);
+		setMaxWidth(200);
 		setMaxHeight(200);
 		setTop(searchField);
 		setCenter(listView);
 		
 	}
 	
+	
+	
+	public TextField getSearchField() {
+		return searchField;
+	}
+
+	public ListView<Object> getListView() {
+		return listView;
+	}
+
+
+
 	EventHandler<KeyEvent> event = new EventHandler<KeyEvent>() {
 		
 		@Override
@@ -68,6 +88,9 @@ public class SuperListPanel extends BorderPane{
 	};
 	
 	public Object getSelected(){
+		if (((String)listView.getSelectionModel().getSelectedItem()).length() != 3){	//Remove currency description
+			return ((String)listView.getSelectionModel().getSelectedItem()).split(",")[0];
+		}
 		return listView.getSelectionModel().getSelectedItem();
 	}
 	
