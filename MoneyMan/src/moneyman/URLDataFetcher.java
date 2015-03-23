@@ -47,7 +47,7 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 	private void processQuote(BufferedReader br) throws IOException {
 		String unprocessedName = br.readLine();
 		String unprocessedPrice = br.readLine();
-		if (unprocessedName.contains("SILVER") || unprocessedName.contains("GOLD") || unprocessedName.contains("PLATINUM")){
+		if (unprocessedName.contains("SILVER") || unprocessedName.contains("GOLD") || unprocessedName.contains("PLATINUM") || unprocessedName.contains("COPPER")){
 			return;
 		}
 		String processedName = unprocessedName.substring(23, 26);

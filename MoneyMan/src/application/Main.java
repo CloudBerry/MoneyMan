@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -66,6 +67,7 @@ public class Main extends Application {
 
 			
 			convertBTN.setOnAction(this::buttonClicked);
+
 			
 			toLabel.setTextAlignment(TextAlignment.CENTER);
 			root.setHalignment(toLabel, HPos.CENTER);
@@ -86,6 +88,7 @@ public class Main extends Application {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			primaryStage.toFront();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
