@@ -1,6 +1,7 @@
 package application;
 	
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 import moneyman.CountryListReader;
@@ -36,6 +37,7 @@ public class Main extends Application {
 	private SuperListPanel fromPanel;
 	private SuperListPanel toPanel;
 	private Label toLabel = new Label("→");
+	private Label infolabel = new Label();
 	
 	private TextField fromField = new TextField();
 	private Button convertBTN = new Button("Convert");
@@ -71,6 +73,7 @@ public class Main extends Application {
 			
 			toLabel.setTextAlignment(TextAlignment.CENTER);
 			root.setHalignment(toLabel, HPos.CENTER);
+			setLastUpdatedText();
 			
 			root.add(fromPanel, 0, 0);
 			root.add(toLabel, 1, 0);
@@ -78,6 +81,7 @@ public class Main extends Application {
 			root.add(fromField, 0, 1);
 			root.add(convertBTN, 1, 1);
 			root.add(toField, 2, 1);
+			root.add(infolabel, 0, 2, 3, 1);
 			
 			root.setPadding(new Insets(15));
 			Scene scene = new Scene(root);
@@ -91,6 +95,14 @@ public class Main extends Application {
 			primaryStage.toFront();
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void setLastUpdatedText(){
+		if (fetcher.getlongestLastUpdate().isEqual(LocalDate.now())){
+			infolabel.setText("Currencies last updated today");
+		} else {
+			infolabel.setText("Currencies last updated "+fetcher.getlongestLastUpdate().toString());
 		}
 	}
 	

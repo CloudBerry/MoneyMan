@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,8 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 
 	private URL currencyURL;
 	private HashMap<String, BigDecimal> currencies = new HashMap<>();
-
+	private LocalDate lastUpdated = LocalDate.now();
+		
 	public URLDataFetcher() {
 		try {
 			currencyURL  = new URL("http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote");
@@ -47,11 +49,19 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 	private void processQuote(BufferedReader br) throws IOException {
 		String unprocessedName = br.readLine();
 		String unprocessedPrice = br.readLine();
-		if (unprocessedName.contains("SILVER") || unprocessedName.contains("GOLD") || unprocessedName.contains("PLATINUM") || unprocessedName.contains("COPPER")){
+		if (unprocessedName.contains("SILVER") || unprocessedName.contains("GOLD") || unprocessedName.contains("PLATIN") || unprocessedName.contains("COPPER")
+				|| unprocessedName.contains("PALLADIUM")
+		){
 			return;
 		}
+		for (int i = 0; i < 3; i++) br.readLine(); //Skip 3 lines
+		String unprocessedDate = br.readLine();
 		String processedName = unprocessedName.substring(23, 26);
 		String processedPrice = unprocessedPrice.substring(unprocessedPrice.indexOf("\">")+2, unprocessedPrice.indexOf("</field"));
+		LocalDate processedDate = LocalDate.parse(unprocessedDate.substring(22, 32));
+		if (lastUpdated.isAfter(processedDate)){
+			lastUpdated = processedDate;
+		}
 		currencies.put(processedName, new BigDecimal(processedPrice));
 	}
 	
@@ -73,12 +83,19 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 		return currencies.size();
 	}
 	
+	@Override
+	public LocalDate getlongestLastUpdate() {
+		return lastUpdated;
+	}
+	
 	public static void main(String[] args) {
 		CurrencyFetcherInterface fetcher = new URLDataFetcher();
 		HashMap<String, BigDecimal> currencies = fetcher.getCurrencyMap();
-		currencies.forEach((s, v) -> System.out.println(s+" - "+v.toString()));
+//		currencies.forEach((s, v) -> System.out.println(s+" - "+v.toString()));
 		
 	}
+
+	
 
 	
 
