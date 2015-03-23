@@ -58,10 +58,16 @@ public class URLDataFetcher implements CurrencyFetcherInterface{
 		String unprocessedDate = br.readLine();
 		String processedName = unprocessedName.substring(23, 26);
 		String processedPrice = unprocessedPrice.substring(unprocessedPrice.indexOf("\">")+2, unprocessedPrice.indexOf("</field"));
-		LocalDate processedDate = LocalDate.parse(unprocessedDate.substring(22, 32));
-		if (lastUpdated.isAfter(processedDate)){
-			lastUpdated = processedDate;
+		try {
+			LocalDate processedDate = LocalDate.parse(unprocessedDate.substring(22, 32));
+			if (lastUpdated.isAfter(processedDate)){
+				lastUpdated = processedDate;
+			}
+		} catch (Exception e){
+			e.printStackTrace();
 		}
+		
+		
 		currencies.put(processedName, new BigDecimal(processedPrice));
 	}
 	

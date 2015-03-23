@@ -24,29 +24,37 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class QuickConverter extends Application {
-	
+
 	private CurrencyFetcherInterface fetcher;
-	
+
 	private TextField textField = new TextField();
 	private Label exampleLabel = new Label("Example: 100 USD to NOK");
 	private boolean calculated = false;
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		try {
-			fetcher = new URLDataFetcher();		//Try online
-			if (fetcher.getAvailableCurrencyCount() == 0) {
-				//TODO: TRY OFFLINE
-			}
+
+			Thread thread = new Thread(){
+				@Override public void run() {
+					fetcher = new URLDataFetcher();		//Try online
+					if (fetcher.getAvailableCurrencyCount() == 0) {
+						//TODO: TRY OFFLINE
+					}
+				}
+			};
+			thread.start();
+			thread.join();
 			
+
 			textField.setFont(new Font(30));
 			exampleLabel.setPadding(new Insets(2));
 			textField.setOnKeyPressed(event -> keyEventHandler(event));
 			BorderPane root = new BorderPane();
 			root.setCenter(textField);
 			root.setBottom(exampleLabel);
-			
+
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -56,7 +64,7 @@ public class QuickConverter extends Application {
 		}
 
 	}
-	
+
 	private void keyEventHandler(KeyEvent event){
 		textField.setStyle("-fx-text-inner-color: black;");
 		if (calculated) {
@@ -64,8 +72,8 @@ public class QuickConverter extends Application {
 			textField.positionCaret(0);
 			calculated = false;
 		}
-		
-		
+
+
 		if (event.getCode() == KeyCode.ESCAPE){
 			Platform.exit();
 		} else if (event.getCode() == KeyCode.ENTER){
@@ -81,10 +89,10 @@ public class QuickConverter extends Application {
 			textField.positionCaret(textField.getText().length());
 		}
 	}
-	
+
 
 	public static void main(String[] args) {
-		
+
 		launch(args);
 	}
 

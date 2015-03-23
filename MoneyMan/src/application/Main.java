@@ -1,10 +1,13 @@
 package application;
 	
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 
 import quickconverter.QuickConverter;
+import moneyman.CacheWriter;
+import moneyman.CachedDataFetcher;
 import moneyman.CountryListReader;
 import moneyman.CurrencyConverter;
 import moneyman.CurrencyFetcherInterface;
@@ -54,7 +57,14 @@ public class Main extends Application {
 		//Fetch currency data
 		fetcher = new URLDataFetcher();		//Try online
 		if (fetcher.getAvailableCurrencyCount() == 0) {
-			//TODO: TRY OFFLINE
+			System.err.println("Could not connect to the internet, loading cache");
+			fetcher = new CachedDataFetcher();
+		}
+		try {
+			CacheWriter.cacheCurrencyData(fetcher.getCurrencyMap(), fetcher.getlongestLastUpdate());
+		} catch (IOException e1) {
+			System.err.println("Could not store cache...");
+			e1.printStackTrace();
 		}
 		countryinfo = new CountryListReader().getCountries();
 		try {
