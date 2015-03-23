@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 
+import quickconverter.QuickConverter;
 import moneyman.CountryListReader;
 import moneyman.CurrencyConverter;
 import moneyman.CurrencyFetcherInterface;
 import moneyman.URLDataFetcher;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
@@ -122,6 +124,20 @@ public class Main extends Application {
 	
 	
 	public static void main(String[] args) {
+		
+//		Platform.runLater(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				try {
+//					new QuickConverter().start(new Stage());
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 		launch(args);
 	}
 }
